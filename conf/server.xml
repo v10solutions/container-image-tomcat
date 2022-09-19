@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Container Image Tomcat
+-->
+
+<Server port="0" shutdown="SHUTDOWN">
+	<Listener className="org.apache.catalina.startup.VersionLoggerListener"/>
+	<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on"/>
+	<Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/>
+	<Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"/>
+	<Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener"/>
+
+	<GlobalNamingResources>
+		<Resource
+		name="UserDatabase"
+		auth="Container"
+		type="org.apache.catalina.UserDatabase"
+		description="User database that can be updated and saved"
+		factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+		pathname="conf/tomcat-users.xml"/>
+	</GlobalNamingResources>
+
+	<Service name="Catalina">
+		<Connector
+		SSLEnabled="true"
+		secure="true"
+		scheme="https"
+		port="443"
+		maxThreads="150"
+		protocol="org.apache.coyote.http11.Http11AprProtocol">
+			<UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
+			<SSLHostConfig caCertificateFile="conf/ca.pem">
+				<Certificate
+				certificateFile="conf/tls-cer.pem"
+				certificateKeyFile="conf/tls-key.pem"
+				type="EC"/>
+			</SSLHostConfig>
+		</Connector>
+		<Engine name="Catalina" defaultHost="tomcat">
+			<Realm className="org.apache.catalina.realm.LockOutRealm">
+				<Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>
+			</Realm>
+			<Host name="tomcat" appBase="webapps" unpackWARs="true" autoDeploy="true">
+				<Valve
+				className="org.apache.catalina.valves.AccessLogValve"
+				directory="/dev"
+				prefix="stdout"
+				suffix=""
+				fileDateFormat=""
+				pattern="%h %l %u %t &quot;%r&quot; %s %b"/>
+			</Host>
+		</Engine>
+	</Service>
+</Server>

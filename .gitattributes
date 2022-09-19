@@ -1,0 +1,7 @@
+#
+# Container Image Tomcat
+#
+
+conf/ca.pem binary
+conf/tls-cer.pem binary
+conf/tls-key.pem binary
